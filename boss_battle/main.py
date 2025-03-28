@@ -1,6 +1,7 @@
 import pygame
 
 from boss_battle.game_context import GameContext
+from boss_battle.handle_collission import handle_collisions
 from boss_battle.screens.main_menu import MainMenu
 from boss_battle.sprites.boss import Boss
 from boss_battle.sprites.player import Player
@@ -61,31 +62,19 @@ while game_context.running:
 
             game_context.sprites_handler.all_sprites.update(delta_time)
             game_context.sprites_handler.all_sprites.draw(game_context.screen)
-
-            collisions = pygame.sprite.groupcollide(
-                game_context.sprites_handler.player_projectiles,
-                game_context.sprites_handler.boss_sprites,
-                True,
-                False,
-            )
-
-            for sprite in collisions:
-                if not hasattr(sprite, "damage"):
-                    raise Exception("Collided sprite does not have damage attribute")
-                boss.stats.health -= sprite.damage
-
-            # Check if boss was defeated
-            if boss.stats.health <= 0:
-                game_context.game_state = GameState.MAINMENU
-                # Reset game state
-                boss.stats.health = 500
-                boss.rect.x = 640
-                boss.rect.y = 360
-                boss.move_timer = 0
+            handle_collisions(game_context)
 
             # Render boss health
-            health_text = font.render(f"Boss Health: {boss.stats.health}", True, "white")
+            health_text = font.render(
+                f"Boss Health: {boss.stats.health}", True, "white"
+            )
             screen.blit(health_text, (10, 10))
+
+            # Render player health
+            player_health_text = font.render(
+                f"Player Health: {player.stats.health}", True, "white"
+            )
+            screen.blit(player_health_text, (10, 40))
         case _:
             raise ValueError(f"Unknown game state: {game_context.game_state}")
 
