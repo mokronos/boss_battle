@@ -29,8 +29,16 @@ class Player(pygame.sprite.Sprite):
     def update(self, *args: tuple, **kwargs: tuple) -> None:
         """Update player position."""
         super().update(*args, **kwargs)
-        self.rect.x += self.velocity[0] * self.movement_speed
-        self.rect.y += self.velocity[1] * self.movement_speed
+        x_new = self.rect.x + self.velocity[0] * self.movement_speed
+        y_new = self.rect.y + self.velocity[1] * self.movement_speed
+
+        if x_new >= 0 and x_new <= self.game_context.screen.get_width() - self.rect.width:
+            self.rect.x = x_new
+        if (
+            y_new >= 0
+            and y_new <= self.game_context.screen.get_height() - self.rect.height
+        ):
+            self.rect.y = y_new
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """Handle user input."""
