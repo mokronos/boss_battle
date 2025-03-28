@@ -21,23 +21,9 @@ class Boss(pygame.sprite.Sprite):
         self.move_timer = 0  # For movement pattern
         self.game_context = game_context
 
-    # def draw(self) -> None:
-    #     """Draw boss with core, outline, and health bar."""
-    #     # Yellow outline
-    #     pygame.draw.circle(screen, "yellow", (self.rect.x, self.rect.y), 45, 5)
-    #     # Green core
-    #     pygame.draw.circle(screen, "darkgreen", (self.rect.x, self.rect.y), 40)
-
-    #     # Health bar
-    #     health_width = 100
-    #     current_health_width = (self.health / self.max_health) * health_width
-    #     pygame.draw.rect(screen, "red", (self.rect.x - 50, self.rect.y - 70, health_width, 10))
-    #     pygame.draw.rect(
-    #         screen, "green", (self.rect.x - 50, self.rect.y - 70, current_health_width, 10)
-    #     )
-
-    def update(self) -> None:
+    def update(self, *args: tuple, **kwargs: tuple) -> None:
         """Update boss position with smooth movement pattern."""
+        super().update(*args, **kwargs)
         self.move_timer += 0.02
         self.rect.x += int(math.cos(self.move_timer) * 1.5)  # Horizontal wave pattern
         self.rect.y += int(

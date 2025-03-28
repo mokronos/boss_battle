@@ -5,14 +5,13 @@ from boss_battle.screens.main_menu import Menu
 from boss_battle.sprites.boss import Boss
 from boss_battle.sprites.player import Player
 
-# pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)
 game_context = GameContext(screen, clock, font, running=True)
 
-player = Player(x=100, y=100, movement_speed=10, game_context=game_context)
+player = Player(x=100, y=100, movement_speed=5, game_context=game_context)
 boss = Boss(x=640, y=360, health=500, game_context=game_context)
 game_context.sprites_handler.all_sprites.add(player)
 game_context.sprites_handler.all_sprites.add(boss)
@@ -23,6 +22,8 @@ game_context.sprites_handler.boss_sprites.add(boss)
 menu = Menu(game_context=game_context)
 
 while game_context.running:
+    delta_time = clock.tick(144) / 1000  # Time elapsed in seconds since the last frame
+
     if menu.game_state == "menu":
         menu.draw(screen)
         for event in pygame.event.get():
@@ -30,7 +31,6 @@ while game_context.running:
                 game_context.running = False
             menu.handle_input(event)
         pygame.display.flip()
-        clock.tick(144)
         continue
 
     # Handle events
@@ -47,7 +47,7 @@ while game_context.running:
 
     screen.fill("purple")
 
-    game_context.sprites_handler.all_sprites.update()
+    game_context.sprites_handler.all_sprites.update(delta_time)
     game_context.sprites_handler.all_sprites.draw(screen)
 
     # Process projectiles and check collisions
@@ -76,6 +76,5 @@ while game_context.running:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-
 
 pygame.quit()

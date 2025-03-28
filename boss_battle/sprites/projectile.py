@@ -19,8 +19,9 @@ class Projectile(pygame.sprite.Sprite):
         self.velocity = velocity
         self.game_context = game_context
 
-    def update(self) -> None:
+    def update(self, *args: tuple, **kwargs: tuple) -> None:
         """Update projectile."""
+        super().update(*args, **kwargs)
         self.rect.x += self.velocity[0] * 10
         self.rect.y += self.velocity[1] * 10
 
