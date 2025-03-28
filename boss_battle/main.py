@@ -4,6 +4,7 @@ from boss_battle.game_context import GameContext
 from boss_battle.screens.main_menu import Menu
 from boss_battle.sprites.boss import Boss
 from boss_battle.sprites.player import Player
+from boss_battle.sprites.stats import Stats
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -11,8 +12,18 @@ clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)
 game_context = GameContext(screen, clock, font, running=True)
 
-player = Player(x=100, y=100, movement_speed=5, game_context=game_context)
-boss = Boss(x=640, y=360, health=500, game_context=game_context)
+player = Player(
+    x=100,
+    y=100,
+    game_context=game_context,
+    stats=Stats(health=100, damage=10, attack_speed=1, movement_speed=5),
+)
+boss = Boss(
+    x=640,
+    y=360,
+    game_context=game_context,
+    stats=Stats(health=500, damage=20, attack_speed=1, movement_speed=2),
+)
 game_context.sprites_handler.all_sprites.add(player)
 game_context.sprites_handler.all_sprites.add(boss)
 
@@ -59,19 +70,21 @@ while game_context.running:
     )
 
     for sprite in collisions:
-        boss.health -= 10
+        if not hasattr(sprite, "damage"):
+            raise Exception("Projectile sprite does not have damage attribute.")
+        boss.stats.health -= sprite.damage
 
     # Check if boss was defeated
-    if boss.health <= 0:
+    if boss.stats.health <= 0:
         menu.game_state = "menu"
         # Reset game state
-        boss.health = 500
+        boss.stats.health = 500
         boss.rect.x = 640
         boss.rect.y = 360
         boss.move_timer = 0
 
     # Render boss health
-    health_text = font.render(f"Boss Health: {boss.health}", True, "white")
+    health_text = font.render(f"Boss Health: {boss.stats.health}", True, "white")
     screen.blit(health_text, (10, 10))
 
     # flip() the display to put your work on screen

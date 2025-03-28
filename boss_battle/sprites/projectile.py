@@ -7,7 +7,12 @@ class Projectile(pygame.sprite.Sprite):
     """Projectile class."""
 
     def __init__(
-        self, x: int, y: int, velocity: tuple[int, int], game_context: GameContext
+        self,
+        x: int,
+        y: int,
+        velocity: tuple[int, int],
+        damage: int,
+        game_context: GameContext,
     ) -> None:
         """Projectile constructor."""
         super().__init__()
@@ -17,6 +22,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.velocity = velocity
+        self.damage = damage
         self.game_context = game_context
 
     def update(self, *args: tuple, **kwargs: tuple) -> None:

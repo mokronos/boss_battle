@@ -2,14 +2,13 @@ import pygame
 
 from boss_battle.game_context import GameContext
 from boss_battle.sprites.projectile import Projectile
+from boss_battle.sprites.stats import Stats
 
 
 class Player(pygame.sprite.Sprite):
     """Player class."""
 
-    def __init__(
-        self, x: int, y: int, movement_speed: int, game_context: GameContext
-    ) -> None:
+    def __init__(self, x: int, y: int, stats: Stats, game_context: GameContext) -> None:
         """Player constructor."""
         super().__init__()
         self.image = pygame.Surface((30, 30))
@@ -19,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.velocity: tuple[int, int] = (0, 0)
-        self.movement_speed = movement_speed
+        self.stats = stats
         self.game_context = game_context
 
     def draw(self) -> None:
@@ -29,10 +28,13 @@ class Player(pygame.sprite.Sprite):
     def update(self, *args: tuple, **kwargs: tuple) -> None:
         """Update player position."""
         super().update(*args, **kwargs)
-        x_new = self.rect.x + self.velocity[0] * self.movement_speed
-        y_new = self.rect.y + self.velocity[1] * self.movement_speed
+        x_new = self.rect.x + self.velocity[0] * self.stats.movement_speed
+        y_new = self.rect.y + self.velocity[1] * self.stats.movement_speed
 
-        if x_new >= 0 and x_new <= self.game_context.screen.get_width() - self.rect.width:
+        if (
+            x_new >= 0
+            and x_new <= self.game_context.screen.get_width() - self.rect.width
+        ):
             self.rect.x = x_new
         if (
             y_new >= 0
@@ -67,7 +69,11 @@ class Player(pygame.sprite.Sprite):
             ) ** 0.5
             vel = ((x_mouse - self.rect.x) / len_vec, (y_mouse - self.rect.y) / len_vec)
             projectile = Projectile(
-                self.rect.x, self.rect.y, velocity=vel, game_context=self.game_context
+                self.rect.x,
+                self.rect.y,
+                velocity=vel,
+                game_context=self.game_context,
+                damage=self.stats.damage,
             )
             self.game_context.sprites_handler.all_sprites.add(projectile)
             self.game_context.sprites_handler.player_projectiles.add(projectile)
