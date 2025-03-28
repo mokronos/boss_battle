@@ -35,9 +35,6 @@ ignore = [
     "ANN102", # cls argument missing type hint
 ]
 
-[tool.ruff.lint]
-isort = { required-imports = ["from __future__ import annotations"] }
-
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
