@@ -5,5 +5,5 @@ class GameState(Enum):
     """Game states."""
 
     MAINMENU = "main_menu"
-    CONFIG = "config"
+    CONFIGMENU = "config"
     PLAYING = "playing"

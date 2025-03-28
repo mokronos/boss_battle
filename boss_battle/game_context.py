@@ -15,6 +15,7 @@ class GameContext:
         running: bool,
         sprites_handler: SpritesHandler = SpritesHandler(),
         game_state: GameState = GameState.MAINMENU,
+        game_settings: dict = {},
     ) -> None:
         self.screen = screen
         self.clock = clock
@@ -22,3 +23,4 @@ class GameContext:
         self.running = running
         self.sprites_handler = sprites_handler
         self.game_state = game_state
+        self.game_settings = game_settings

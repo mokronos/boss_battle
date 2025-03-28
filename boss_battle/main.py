@@ -3,7 +3,7 @@ import pygame
 from boss_battle.game_context import GameContext
 from boss_battle.handle_collission import handle_collisions
 from boss_battle.screens.main_menu import MainMenu
-from boss_battle.sprites.boss import Boss
+from boss_battle.screens.config_menu import ConfigMenu
 from boss_battle.sprites.player import Player
 from boss_battle.sprites.stats import Stats
 from boss_battle.types_ import GameState
@@ -20,30 +20,30 @@ player = Player(
     game_context=game_context,
     stats=Stats(health=100, damage=10, attack_speed=10, movement_speed=5),
 )
-boss = Boss(
-    x=640,
-    y=360,
-    game_context=game_context,
-    stats=Stats(health=500, damage=20, attack_speed=1, movement_speed=2),
-)
 game_context.sprites_handler.all_sprites.add(player)
-game_context.sprites_handler.all_sprites.add(boss)
 
 game_context.sprites_handler.player_sprites.add(player)
-game_context.sprites_handler.boss_sprites.add(boss)
 
-menu = MainMenu(game_context=game_context)
+main_menu = MainMenu(game_context=game_context)
+config_menu = ConfigMenu(game_context=game_context)
 
 while game_context.running:
     delta_time = clock.tick(144) / 1000  # Time elapsed in seconds since the last frame
 
     match game_context.game_state:
         case GameState.MAINMENU:
-            menu.draw(screen)
+            main_menu.draw(screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     game_context.running = False
-                menu.handle_input(event)
+                main_menu.handle_input(event)
+
+        case GameState.CONFIGMENU:
+            config_menu.draw(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    game_context.running = False
+                config_menu.handle_input(event)
 
         case GameState.PLAYING:
             # Handle events
@@ -65,10 +65,11 @@ while game_context.running:
             handle_collisions(game_context)
 
             # Render boss health
-            health_text = font.render(
-                f"Boss Health: {boss.stats.health}", True, "white"
-            )
-            screen.blit(health_text, (10, 10))
+            for i, boss in enumerate(game_context.sprites_handler.boss_sprites):
+                health_text = font.render(
+                    f"Boss Health: {boss.stats.health}", True, "white"
+                )
+                screen.blit(health_text, (10, 10 + i * 100))
 
             # Render player health
             player_health_text = font.render(

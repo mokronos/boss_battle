@@ -35,7 +35,7 @@ class MainMenu:
         """Handle user input."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_rect.collidepoint(event.pos):
-                self.game_context.game_state = GameState.PLAYING
+                self.game_context.game_state = GameState.CONFIGMENU
             elif self.quit_rect.collidepoint(event.pos):
                 pygame.quit()
                 raise SystemExit
