@@ -12,15 +12,16 @@ dt = 0
 class Player:
     """Player class."""
 
-    def __init__(self, x: int = 400, y: int = 400) -> None:
+    def __init__(self, x: int, y: int, speed: int) -> None:
         """Player constructor."""
         self.x = x
         self.y = y
+        self.speed = speed
 
     def move(self, x: int, y: int) -> None:
         """Move player."""
-        self.x += x
-        self.y += y
+        self.x += x * self.speed
+        self.y += y * self.speed
 
     def draw(self) -> None:
         """Draw player."""
@@ -29,7 +30,7 @@ class Player:
 class Boss:
     """Boss class."""
 
-    def __init__(self, x: int = 100, y: int = 100, health: int = 100) -> None:
+    def __init__(self, x: int, y: int, health: int) -> None:
         """Boss constructor."""
         self.x = x
         self.y = y
@@ -70,8 +71,8 @@ class Projectile:
 
 updates = []
 
-player = Player(0, 0)
-boss = Boss(1000, 1000)
+player = Player(x=100, y=100, speed=10)
+boss = Boss(x=1000, y=1000, health=100)
 
 while running:
     # poll for events
@@ -116,6 +117,6 @@ while running:
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(144) / 1000
 
 pygame.quit()
