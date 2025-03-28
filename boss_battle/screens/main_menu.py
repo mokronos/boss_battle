@@ -1,15 +1,15 @@
 import pygame
 
 from boss_battle.game_context import GameContext
+from boss_battle.types_ import GameState
 
 
-class Menu:
+class MainMenu:
     """Main menu with start and quit buttons."""
 
     def __init__(self, game_context: GameContext) -> None:
         self.font = pygame.font.Font(None, 74)
         self.small_font = pygame.font.Font(None, 50)
-        self.game_state = "menu"
         self.game_context = game_context
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -35,7 +35,7 @@ class Menu:
         """Handle user input."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_rect.collidepoint(event.pos):
-                self.game_state = "playing"
+                self.game_context.game_state = GameState.PLAYING
             elif self.quit_rect.collidepoint(event.pos):
                 pygame.quit()
                 raise SystemExit
