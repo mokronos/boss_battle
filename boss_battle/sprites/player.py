@@ -58,6 +58,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.centerx,
             self.rect.centery,
             velocity=vel,
+            speed=10,
             game_context=self.game_context,
             damage=self.stats.damage,
         )

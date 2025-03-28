@@ -9,3 +9,4 @@ class SpritesHandler:
         self.player_sprites = pygame.sprite.Group()
         self.boss_sprites = pygame.sprite.Group()
         self.player_projectiles = pygame.sprite.Group()
+        self.boss_projectiles = pygame.sprite.Group()

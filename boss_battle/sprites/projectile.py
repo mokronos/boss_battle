@@ -10,7 +10,8 @@ class Projectile(pygame.sprite.Sprite):
         self,
         x: int,
         y: int,
-        velocity: tuple[int, int],
+        velocity: tuple[float, float],
+        speed: int,
         damage: int,
         game_context: GameContext,
     ) -> None:
@@ -22,14 +23,15 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.velocity = velocity
+        self.speed = speed
         self.damage = damage
         self.game_context = game_context
 
     def update(self, *args: tuple, **kwargs: tuple) -> None:
         """Update projectile."""
         super().update(*args, **kwargs)
-        self.rect.x += self.velocity[0] * 10
-        self.rect.y += self.velocity[1] * 10
+        self.rect.x += int(self.velocity[0] * self.speed)
+        self.rect.y += int(self.velocity[1] * self.speed)
 
     def move(self, x: int, y: int) -> None:
         """Move projectile."""
