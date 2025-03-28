@@ -1,7 +1,5 @@
-# Example file showing a circle moving on screen
 import pygame
 
-# pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
@@ -9,108 +7,118 @@ running = True
 dt = 0
 
 
-class Player:
+class Player(pygame.sprite.Sprite):
     """Player class."""
 
-    def __init__(self, x: int, y: int, speed: int) -> None:
+    def __init__(self, x: int, y: int, movement_speed: int) -> None:
         """Player constructor."""
-        self.x = x
-        self.y = y
-        self.speed = speed
-
-    def move(self, x: int, y: int) -> None:
-        """Move player."""
-        self.x += x * self.speed
-        self.y += y * self.speed
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill("blue")
+        self.rect = self.image.get_rect()
+        
+        self.rect.x = x
+        self.rect.y = y
+        self.velocity: tuple[int, int] = (0, 0)
+        self.movement_speed = movement_speed
 
     def draw(self) -> None:
-        """Draw player."""
-        pygame.draw.circle(screen, "red", (self.x, self.y), 40)
+        pass
+        
+    def update(self):
+        self.rect.x += self.velocity[0] * self.movement_speed
+        self.rect.y += self.velocity[1] * self.movement_speed
+      
+    def handle_event(self, event: pygame.event.Event) -> None:
+      
+      keys = pygame.key.get_pressed()
+      if keys[pygame.K_w]:
+          self.velocity = (self.velocity[0], -1)
+      if keys[pygame.K_s]:
+          self.velocity = (self.velocity[0], 1)
+      if keys[pygame.K_a]:
+          self.velocity = (-1, self.velocity[1])
+      if keys[pygame.K_d]:
+          self.velocity = (1, self.velocity[1])
+      if not keys[pygame.K_x] and not keys[pygame.K_w] and not keys[pygame.K_s] and not keys[pygame.K_a] and not keys[pygame.K_d]:
+          self.velocity = (0, 0)
+          
+      if event.type == pygame.MOUSEBUTTONDOWN:
+          x_mouse, y_mouse = pygame.mouse.get_pos()
+          len_vec = ((x_mouse - self.rect.x) ** 2 + (y_mouse - self.rect.y) ** 2) ** 0.5
+          vel = ((x_mouse - self.rect.x) / len_vec, (y_mouse - self.rect.y) / len_vec)
+          all_sprites.add(Projectile(self.rect.x, self.rect.y, velocity=vel))
 
-class Boss:
+class Boss(pygame.sprite.Sprite):
     """Boss class."""
 
     def __init__(self, x: int, y: int, health: int) -> None:
         """Boss constructor."""
-        self.x = x
-        self.y = y
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill("red")
+        self.rect = self.image.get_rect()
+        
+        self.rect.x = x
+        self.rect.y = y
         self.health = health
 
-    def move(self, x: int, y: int) -> None:
-        """Move boss."""
-        self.x += x
-        self.y += y
-
     def draw(self) -> None:
-        """Draw boss."""
-        pygame.draw.circle(screen, "green", (self.x, self.y), 40)
+        pass
+        
+    def update(self):
+        pass
 
 
-class Projectile:
+class Projectile(pygame.sprite.Sprite):
     """Projectile class."""
 
     def __init__(self, x: int, y: int, velocity: tuple[int, int]) -> None:
         """Projectile constructor."""
-        self.x = x
-        self.y = y
+        super().__init__()
+        self.image = pygame.Surface((10, 10))
+        self.image.fill("yellow")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
         self.velocity = velocity
 
     def update(self) -> None:
         """Update projectile."""
-        self.x += self.velocity[0] * 10
-        self.y += self.velocity[1] * 10
+        self.rect.x += self.velocity[0] * 10
+        self.rect.y += self.velocity[1] * 10
 
-    def move(self, x: float, y: float) -> None:
+    def move(self, x: int, y: int) -> None:
         """Move projectile."""
-        self.x += x
-        self.y += y
+        self.rect.x += x
+        self.rect.y += y
 
     def draw(self) -> None:
         """Draw projectile."""
-        pygame.draw.circle(screen, "blue", (self.x, self.y), 10)
+        pygame.draw.circle(screen, "blue", (self.rect.x, self.rect.y), 10)
 
-updates = []
+all_sprites = pygame.sprite.Group()
 
-player = Player(x=100, y=100, speed=10)
-boss = Boss(x=1000, y=1000, health=100)
+all_sprites.add(Player(0, 0, 10))
+all_sprites.add(Boss(500, 500, health=100))
 
 while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+            running = False
+            
+        for sprite in all_sprites:
+          if hasattr(sprite, "handle_event"):
+              sprite.handle_event(event)
 
-    # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
-    player.draw()
-    boss.draw()
-
-    for update in updates:
-        update.update()
-        update.draw()
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player.move(0, -1)
-    if keys[pygame.K_s]:
-        player.move(0, 1)
-    if keys[pygame.K_a]:
-        player.move(-1, 0)
-    if keys[pygame.K_d]:
-        player.move(1, 0)
-    if keys[pygame.K_x]:
-        pygame.quit()
-    mouse = pygame.mouse.get_pressed()
-    if mouse[0]:
-        x_mouse, y_mouse = pygame.mouse.get_pos()
-        len_vec = ((x_mouse - player.x) ** 2 + (y_mouse - player.y) ** 2) ** 0.5
-        vel = ((x_mouse - player.x) / len_vec, (y_mouse - player.y) / len_vec)
-        projectile = Projectile(player.x, player.y, velocity=vel)
-        updates.append(projectile)
-
-
+    all_sprites.update()
+    all_sprites.draw(screen)
+    
     # flip() the display to put your work on screen
     pygame.display.flip()
 
