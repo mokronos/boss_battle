@@ -70,7 +70,9 @@ while game_context.running:
             )
 
             for sprite in collisions:
-                boss.stats.health -= 10
+                if not hasattr(sprite, "damage"):
+                    raise Exception("Collided sprite does not have damage attribute")
+                boss.stats.health -= sprite.damage
 
             # Check if boss was defeated
             if boss.stats.health <= 0:
