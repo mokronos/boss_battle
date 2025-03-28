@@ -17,7 +17,7 @@ player = Player(
     x=100,
     y=100,
     game_context=game_context,
-    stats=Stats(health=100, damage=10, attack_speed=1, movement_speed=5),
+    stats=Stats(health=100, damage=10, attack_speed=10, movement_speed=5),
 )
 boss = Boss(
     x=640,
@@ -53,12 +53,12 @@ while game_context.running:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
                     game_context.running = False
 
-                for sprite in game_context.sprites_handler.all_sprites:
-                    if hasattr(sprite, "handle_event"):
-                        sprite.handle_event(event)
-
-
             screen.fill("purple")
+
+            for sprite in game_context.sprites_handler.all_sprites:
+                if hasattr(sprite, "handle_events"):
+                    sprite.handle_events()
+
             game_context.sprites_handler.all_sprites.update(delta_time)
             game_context.sprites_handler.all_sprites.draw(game_context.screen)
 

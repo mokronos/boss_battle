@@ -21,6 +21,51 @@ class Player(pygame.sprite.Sprite):
         self.stats = stats
         self.game_context = game_context
 
+        self.last_attack_time = 0
+
+    def can_attack(self) -> bool:
+        """Check if enough time has passed to allow another attack."""
+        current_time = pygame.time.get_ticks()
+        # Convert attack speed to milliseconds between attacks
+        attack_cooldown = 1000 / self.stats.attack_speed
+        return current_time - self.last_attack_time >= attack_cooldown
+
+    def attack(self) -> None:
+        """Create a projectile if attack cooldown has passed."""
+        if not self.can_attack():
+            return
+
+        # Update the last attack time to current time
+        self.last_attack_time = pygame.time.get_ticks()
+
+        # Calculate projectile direction toward mouse position
+        x_mouse, y_mouse = pygame.mouse.get_pos()
+        len_vec = (
+            (x_mouse - self.rect.centerx) ** 2 + (y_mouse - self.rect.centery) ** 2
+        ) ** 0.5
+
+        # Avoid division by zero
+        if len_vec == 0:
+            return
+
+        vel = (
+            (x_mouse - self.rect.centerx) / len_vec,
+            (y_mouse - self.rect.centery) / len_vec,
+        )
+
+        # Create projectile at player's center
+        projectile = Projectile(
+            self.rect.centerx,
+            self.rect.centery,
+            velocity=vel,
+            game_context=self.game_context,
+            damage=self.stats.damage,
+        )
+
+        # Add projectile to sprite groups
+        self.game_context.sprites_handler.all_sprites.add(projectile)
+        self.game_context.sprites_handler.player_projectiles.add(projectile)
+
     def draw(self) -> None:
         """Draw player."""
         pass
@@ -42,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         ):
             self.rect.y = y_new
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def handle_events(self) -> None:
         """Handle user input."""
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -54,26 +99,13 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_d]:
             self.velocity = (1, self.velocity[1])
         if (
-            not keys[pygame.K_x]
-            and not keys[pygame.K_w]
+            not keys[pygame.K_w]
             and not keys[pygame.K_s]
             and not keys[pygame.K_a]
             and not keys[pygame.K_d]
         ):
             self.velocity = (0, 0)
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            x_mouse, y_mouse = pygame.mouse.get_pos()
-            len_vec = (
-                (x_mouse - self.rect.x) ** 2 + (y_mouse - self.rect.y) ** 2
-            ) ** 0.5
-            vel = ((x_mouse - self.rect.x) / len_vec, (y_mouse - self.rect.y) / len_vec)
-            projectile = Projectile(
-                self.rect.x,
-                self.rect.y,
-                velocity=vel,
-                game_context=self.game_context,
-                damage=self.stats.damage,
-            )
-            self.game_context.sprites_handler.all_sprites.add(projectile)
-            self.game_context.sprites_handler.player_projectiles.add(projectile)
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:
+            self.attack()
