@@ -1,7 +1,7 @@
 [project]
 name = "boss_battle"
 version = "0.1.0"
-description = "Add your description here"
+description = "Fast-paced boss battle game in Python"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -16,3 +16,29 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["boss_battle"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "D",   # pydocstyle
+    "UP",  # pyupgrade
+    "ANN", # Type annotations
+]
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "ANN101", # Self argument missing type hint
+    "ANN102", # cls argument missing type hint
+]
+
+[tool.ruff.lint]
+isort = { required-imports = ["from __future__ import annotations"] }
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
