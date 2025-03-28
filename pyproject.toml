@@ -8,11 +8,16 @@ dependencies = [
     "dotenv>=0.9.9",
     "pydantic>=2.11.0",
     "requests>=2.32.3",
+    "pygame>=2.6.1",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.pyright]
+venv = ".venv"
+venvPath = "."
 
 [tool.hatch.build.targets.wheel]
 packages = ["boss_battle"]
@@ -20,7 +25,7 @@ packages = ["boss_battle"]
 [tool.ruff]
 line-length = 88
 target-version = "py313"
-select = [
+lint.select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
     "F",   # pyflakes
@@ -29,10 +34,11 @@ select = [
     "UP",  # pyupgrade
     "ANN", # Type annotations
 ]
-ignore = [
+lint.ignore = [
     "E501",  # Line too long (handled by formatter)
-    "ANN101", # Self argument missing type hint
-    "ANN102", # cls argument missing type hint
+    "D100", # Top of module missing docstring
+    "D213",
+    "D203"
 ]
 
 [tool.ruff.format]
