@@ -1,10 +1,14 @@
 import pygame
 
+from boss_battle.game_context import GameContext
+
 
 class Projectile(pygame.sprite.Sprite):
     """Projectile class."""
 
-    def __init__(self, x: int, y: int, velocity: tuple[int, int]) -> None:
+    def __init__(
+        self, x: int, y: int, velocity: tuple[int, int], game_context: GameContext
+    ) -> None:
         """Projectile constructor."""
         super().__init__()
         self.image = pygame.Surface((10, 10))
@@ -13,6 +17,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.velocity = velocity
+        self.game_context = game_context
 
     def update(self) -> None:
         """Update projectile."""

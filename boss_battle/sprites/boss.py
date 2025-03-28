@@ -1,10 +1,14 @@
-import pygame
 import math
+
+import pygame
+
+from boss_battle.game_context import GameContext
+
 
 class Boss(pygame.sprite.Sprite):
     """Boss class."""
 
-    def __init__(self, x: int, y: int, health: int) -> None:
+    def __init__(self, x: int, y: int, health: int, game_context: GameContext) -> None:
         """Boss constructor."""
         super().__init__()
         self.image = pygame.Surface((100, 100))
@@ -15,6 +19,7 @@ class Boss(pygame.sprite.Sprite):
         self.health = health
         self.max_health = health  # Track max health for health bar
         self.move_timer = 0  # For movement pattern
+        self.game_context = game_context
 
     # def draw(self) -> None:
     #     """Draw boss with core, outline, and health bar."""
@@ -35,4 +40,6 @@ class Boss(pygame.sprite.Sprite):
         """Update boss position with smooth movement pattern."""
         self.move_timer += 0.02
         self.rect.x += int(math.cos(self.move_timer) * 1.5)  # Horizontal wave pattern
-        self.rect.y += int(math.sin(self.move_timer * 0.8) * 1.2)  # Vertical wave pattern
+        self.rect.y += int(
+            math.sin(self.move_timer * 0.8) * 1.2
+        )  # Vertical wave pattern

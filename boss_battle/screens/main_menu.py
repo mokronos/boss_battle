@@ -1,13 +1,16 @@
 import pygame
 
+from boss_battle.game_context import GameContext
+
 
 class Menu:
     """Main menu with start and quit buttons."""
 
-    def __init__(self) -> None:
+    def __init__(self, game_context: GameContext) -> None:
         self.font = pygame.font.Font(None, 74)
         self.small_font = pygame.font.Font(None, 50)
         self.game_state = "menu"
+        self.game_context = game_context
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw menu with start and quit buttons."""
