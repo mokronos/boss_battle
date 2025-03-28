@@ -1,0 +1,1 @@
+- to run the program use `uv run boss_battle/main.py`

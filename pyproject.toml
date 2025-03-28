@@ -39,7 +39,8 @@ lint.ignore = [
     "E501",  # Line too long (handled by formatter)
     "D100", # Top of module missing docstring
     "D213",
-    "D203"
+    "D203",
+    "D107", # docstring in init
 ]
 
 [tool.ruff.format]
