@@ -60,7 +60,7 @@ class ConfigMenu:
                     x=640,
                     y=360,
                     game_context=self.game_context,
-                    stats=Stats(health=self.game_context.game_settings.get("boss_health", 500), damage=20, attack_speed=1, movement_speed=2),
+                    stats=Stats(health=self.game_context.game_settings.get("boss_health", 500), damage=5, attack_speed=1, movement_speed=2),
                 )
                 self.game_context.sprites_handler.all_sprites.add(boss)
                 self.game_context.sprites_handler.boss_sprites.add(boss)

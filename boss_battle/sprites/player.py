@@ -5,14 +5,31 @@ from boss_battle.sprites.projectile import Projectile
 from boss_battle.sprites.stats import Stats
 
 
+def remove_light_background(image: pygame.Surface, threshold: int=200) -> pygame.Surface:
+    """Make all light-colored pixels (above threshold) transparent."""
+    image = image.convert_alpha()  # Ensure it has an alpha channel
+    width, height = image.get_size()
+
+    for x in range(width):
+        for y in range(height):
+            r, g, b, a = image.get_at((x, y))  # Get pixel color
+            brightness = (r + g + b) // 3  # Compute brightness
+
+            if brightness > threshold:  # If it's a light color, make it transparent
+                image.set_at((x, y), (r, g, b, 0))  # Set alpha to 0
+
+    return image
+
+
 class Player(pygame.sprite.Sprite):
     """Player class."""
 
     def __init__(self, x: int, y: int, stats: Stats, game_context: GameContext) -> None:
         """Player constructor."""
         super().__init__()
-        self.image = pygame.Surface((30, 30))
-        self.image.fill("blue")
+        self.image = pygame.image.load("./img/gemini-native-image.png").convert_alpha()
+        self.image = remove_light_background(self.image)
+        self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
